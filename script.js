@@ -14,9 +14,86 @@ window.onload = function () {
 
     init()
 
-    let numbersArr = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    let numbersArr = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."]
     let operatorsArr = ["+", "-", "*", "/"]
     
+    // 当数字键按下
+    for (let i = 0; i < keyNumbers.length; i++) {
+        keyNumbers[i].addEventListener("click", function (e) {
+            input(e.target.textContent)
+        })
+    }
+
+    // 当按下运算符号
+    for (let i = 0; i < keyOperators.length; i++) {
+        keyOperators[i].addEventListener("click", function (e) {
+            operatorProcess(e.target.textContent)
+            if (operators.length >= 2 && operators.length % 2 === 0) {
+                operatorAsEqual(e.target.textContent)
+            }
+        })
+    }
+
+    // 按下=按键时
+    keyEqual.addEventListener("click", (e) => {
+        equalPreProcess(e.target.textContent)
+        calcWithTempNum(e.target.textContent)
+    })
+
+    // 按下c按键时
+    keyClear.addEventListener("click", () => {
+        init()
+    })
+
+    // 物理键盘事件监听
+    document.addEventListener("keypress", (e) => {
+        console.log(e.key);
+        if (numbersArr.indexOf(e.key) !== -1) {
+            // 按下数字键
+            input(e.key)
+        } else if (operatorsArr.indexOf(e.key) !== -1) {
+            // 按下加减乘除按键
+            operatorProcess(e.key)
+            if (operators.length >= 2 && operators.length % 2 === 0) {
+                operatorAsEqual(e.key)
+            }
+        } else if (e.key === "=" || e.key === "Enter") {
+            equalPreProcess("=");
+            calcWithTempNum("=");
+        } else if (e.key === "c") {
+            // 按下物理键盘上的c按键时
+            init()
+        }
+    })
+
+    // 函数
+
+    // 初始化函数
+    function init() {
+        currentInput = ""
+        numbers = []
+        operators = []
+        result = 0
+        inputBar.innerText = result
+        tempNum = ""
+        tempOperator = ""
+        console.log("--> calculator init")
+    }
+
+    // 基础加减乘除运算函数
+    function calc(operator, x, y) {
+        console.log(operator, x, y)
+        if (operator === "+") {
+            return x + y // 加法
+        } else if (operator === "−" || operator === "-") {
+            return x - y // 减法
+        } else if (operator === "×" || operator === "*") {
+            return x * y // 乘法
+        } else if (operator === "÷" || operator === "/") {
+            return x / y // 除法
+        }
+    }
+
     // 处理输入的函数
     function input(input) {
         if (operators.at(-1) === "=") {
@@ -32,20 +109,12 @@ window.onload = function () {
         inputBar.innerText = currentInput
     }
 
-    // when key numbers pressed
-    for (let i = 0; i < keyNumbers.length; i++) {
-        keyNumbers[i].addEventListener("click", function (e) {
-            input(e.target.textContent)
-        })
-    }
-
     function operatorProcess(operator) {
         if (currentInput === "") {
             if (operators.length === 0) {
                 return
             } else {
-                operators.pop()
-                operators.push(e.target.textContent)
+                operators.splice(-1, 1, operator)
                 return
             }
         }
@@ -54,98 +123,48 @@ window.onload = function () {
         currentInput = ""
     }
 
-    // when operators pressed
-    for (let i = 0; i < keyOperators.length; i++) {
-        keyOperators[i].addEventListener("click", function (e) {
-            if (currentInput === "") {
-                if (operators.length === 0) {
-                    return
-                } else {
-                    operators.pop()
-                    operators.push(e.target.textContent)
-                    return
-                }
-            }
-            numbers.push(+currentInput)
-            operators.push(e.target.innerText)
-            currentInput = ""
-            if (operators.length >= 2 && operators.length % 2 === 0) {
-                if (e.target.innerText === "×" || e.target.innerText === "÷") {
-                    if (operators[0] === "+" || operators[0] === "−") {
-                        tempNum = numbers[0]
-                        tempOperator = operators[0]
-                        numbers.shift()
-                        operators.shift()
-                        console.log(numbers, operators);
-                        return
-                    } else {
-                        result = calc(operators.at(-2), numbers.at(-2), numbers.at(-1))
-                        inputBar.innerText = result
-                        numbers.push(result)
-                        operators.push(e.target.innerText)
-                        return
-                    }
-                    
-                } else if (e.target.innerText === "+" || e.target.innerText === "−") {
-                    if (tempNum !== "") {
-                        console.log("路径一")
-                        result = calc(operators.at(-2), numbers.at(-2), numbers.at(-1))
-                        result = calc(tempOperator, tempNum, result)
-                        inputBar.innerText = result
-                        numbers.push(result)
-                        operators.push(e.target.innerText)
-                        tempNum = ""
-                        tempOperator = ""
-                        return
-                    } else if (tempNum === "") {
-                        console.log("路径二")
-                        result = calc(operators.at(-2), numbers.at(-2), numbers.at(-1))
-                        inputBar.innerText = result
-                        numbers.push(result)
-                        operators.push(e.target.innerText)
-                        return
-                    }
-                }
-                /* result = calc(operators.at(-2), numbers.at(-2), numbers.at(-1))
+    function operatorAsEqual(oper) {
+        if (oper === "×" || oper === "÷" || oper === "*" || oper === "/") {
+            if (operators[0] === "+" || operators[0] === "−") {
+                tempNum = numbers[0];
+                tempOperator = operators[0];
+                numbers.shift();
+                operators.shift();
+                return;
+            } else {
+                result = calc(operators.at(-2), numbers.at(-2), numbers.at(-1))
                 inputBar.innerText = result
                 numbers.push(result)
-                operators.push(e.target.innerText) */
+                operators.push(oper)
+                return
             }
-        })
+        } else if (oper === "+" || oper === "−" || oper === "-") {
+            calcWithTempNum(oper)
+        }
     }
 
-    // when key equal pressed
-    keyEqual.addEventListener("click", (e) => {
-        if (operators[operators.length - 1] === "=" || operators.length === 0) {
-            return
-        }
-        if (currentInput === "") {
-            return
-        }
-        numbers.push(+currentInput)
-        operators.push(e.target.innerText)
-        currentInput = ""
+    function calcWithTempNum(oper) {
         if (tempNum !== "") {
-            console.log("路径一")
+            console.log("The First Way")
             result = calc(operators.at(-2), numbers.at(-2), numbers.at(-1))
             result = calc(tempOperator, tempNum, result)
             inputBar.innerText = result
             numbers.push(result)
-            operators.push(e.target.innerText)
+            operators.push(oper)
             tempNum = ""
             tempOperator = ""
             return
         } else if (tempNum === "") {
-            console.log("路径二")
+            console.log("The Second Way")
             result = calc(operators.at(-2), numbers.at(-2), numbers.at(-1))
             inputBar.innerText = result
             numbers.push(result)
-            operators.push(e.target.innerText)
+            operators.push(oper)
             return
         }
-    })
+    }
 
-    /* keyEqual.addEventListener("click", (e) => {
+    function equalPreProcess(equalKey) {
         if (operators[operators.length - 1] === "=" || operators.length === 0) {
             return
         }
@@ -153,87 +172,7 @@ window.onload = function () {
             return
         }
         numbers.push(+currentInput)
-        operators.push(e.target.innerText)
+        operators.push(equalKey)
         currentInput = ""
-        result = calc(operators.at(-2), numbers.at(-2), numbers.at(-1))
-        inputBar.innerText = result
-        currentInput = result
-    }) */
-
-    // when key clear pressed
-    keyClear.addEventListener("click", () => {
-        init()
-    })
-
-    // clear with keyboard
-    document.addEventListener("keypress", (e) => {
-        if (e.key === "c") {
-            init()
-        }
-    })
-
-    // function calculate
-    function calc(operator, x, y) {
-        console.log(operator, x, y)
-        if (operator === "+") {
-            return x + y // 加法
-        } else if (operator === "−" || operator === "-") {
-            return x - y // 减法
-        } else if (operator === "×" || operator === "*") {
-            return x * y // 乘法
-        } else if (operator === "÷" || operator === "/") {
-            return x / y // 除法
-        }
     }
-
-    // 初始化函数
-    function init() {
-        currentInput = ""
-        numbers = []
-        operators = []
-        result = 0
-        inputBar.innerText = result
-        console.log("--> calculator init")
-        tempNum = ""
-        tempOperator = ""
-    }
-
-    // keyboard event listener
-    document.addEventListener("keypress", (e) => {
-        if (numbersArr.indexOf(e.key) !== -1) {
-            input(e.key)
-        } else if (e.key === "=" || e.key === "Enter") {
-            if (operators[operators.length - 1] === "=" || operators.length === 0) {
-                return
-            }
-            if (currentInput === "") {
-                return
-            }
-            numbers.push(+currentInput)
-            operators.push("=")
-            currentInput = ""
-            result = calc(operators.at(-2), numbers.at(-2), numbers.at(-1))
-            inputBar.innerText = result
-            currentInput = result
-        } else if (operatorsArr.indexOf(e.key) !== -1) {
-            if (currentInput === "") {
-                if (operators.length === 0) {
-                    return
-                } else {
-                    operators.pop()
-                    operators.push(e.key)
-                    return
-                }
-            }
-            numbers.push(+currentInput)
-            operators.push(e.key)
-            currentInput = ""
-            if (operators.length >= 2 && operators.length % 2 === 0) {
-                result = calc(operators.at(-2), numbers.at(-2), numbers.at(-1))
-                inputBar.innerText = result
-                numbers.push(result)
-                operators.push(e.key)
-            }
-        }
-    })
 }
