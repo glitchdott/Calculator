@@ -1,0 +1,97 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: '.AppleSystemUIFont', sans-serif;
+    font-weight: 300;
+}
+
+body {
+    background-color: #f5f5f9;
+}
+
+.title {
+    text-align: center;
+    margin-top: 100px;
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.title span {
+    font-size: 10px;
+    padding: 4px 8px;
+    background-color: rgb(248, 162, 57);
+    border-radius: 20px;
+    display: inline-block;
+    position: absolute;
+    transform: translateX(4px) translateY(-4px);
+}
+
+.footer {
+    text-align: center;
+    font-size: 14px;
+}
+
+.calculator {
+    width: 400px;
+    margin: 20px auto;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 1em;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    gap: 1rem;
+    transition: all .3s;
+}
+
+.input {
+    grid-column: 1/5;
+    font-size: 2rem;
+    height: 4rem;
+    padding: 2rem .5em;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    overflow: auto;
+    transition: all .3s;
+}
+
+.input:hover {
+    border: 1px solid #aaa;
+}
+
+.btn {
+    font-size: 1.5rem;
+    flex-grow: 1;
+    background-color: #f2f2f7;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all .3s;
+}
+
+.operator {
+    background-color: #e2e2e7;
+    border: 1px solid #bbb;
+}
+
+.equal {
+    grid-column: 4/5;
+    grid-row: 3/7;
+    background-color: rgb(248, 162, 57);
+    border: 1px solid rgb(147, 88, 16);
+    color: white;
+}
+
+.btn:hover {
+    box-shadow: 0 6px 8px rgba(0,0,0,.08);
+    font-weight: 360;
+}
