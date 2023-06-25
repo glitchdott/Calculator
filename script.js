@@ -1,64 +1,52 @@
 window.onload = function () {
-    const inputBar = document.getElementById("input");
-    const keyNumbers = [...document.getElementsByClassName("number")];
-    const keyOperators = [...document.getElementsByClassName("operator")];
-    const keyClear = document.querySelector(".clear");
-    const keyEqual = document.querySelector(".equal");
+    const inputBar = document.getElementById("input")
+    const keyNumbers = [...document.getElementsByClassName("number")]
+    const keyOperators = [...document.getElementsByClassName("operator")]
+    const keyClear = document.querySelector(".clear")
+    const keyEqual = document.querySelector(".equal")
 
-    let currentInput;
-    let numbers;
-    let operators;
-    let result;
-    let tempNum;
-    let tempOperator;
-
-    init()
+    let currentInput
+    let numbers
+    let operators
+    let result
+    let tempNum
+    let tempOperator
 
     let numbersArr = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."]
     let operatorsArr = ["+", "-", "*", "/"]
-    
+
+    init()
+
     document.addEventListener("click", (e) => {
         if (keyNumbers.indexOf(e.target) !== -1) {
-            // 当数字键按下
-            input(e.target.innerText)
+            inputHandler(e.target.innerText) // 点击数字
         } else if (keyOperators.indexOf(e.target) !== -1) {
-            // 点击运算符
-            operatorProcess(e.target.textContent)
+            operatorHandler(e.target.textContent) // 点击运算符
             if (operators.length >= 2 && operators.length % 2 === 0) {
-                operatorAsEqual(e.target.textContent)
+                operatorToCalc(e.target.textContent)
             }
         } else if (e.target === keyEqual) {
-            // 点击等于号
-            equalPreProcess(e.target.textContent)
-            calcWithTempNum(e.target.textContent)
+            equalHandler(e.target.textContent) // 点击等于号
         } else if (e.target === keyClear) {
-            // 点击清空按钮
-            init()
+            init() // 点击清空按钮
         }
     })
 
-    // 物理键盘事件监听
     document.addEventListener("keypress", (e) => {
-        console.log(e.key);
+        console.log(e.key)
         if (numbersArr.indexOf(e.key) !== -1) {
-            // 按下数字键
-            input(e.key)
+            inputHandler(e.key) // 按下数字键
         } else if (operatorsArr.indexOf(e.key) !== -1) {
-            // 按下加减乘除按键
-            operatorProcess(e.key)
+            operatorHandler(e.key) // 按下运算符
             if (operators.length >= 2 && operators.length % 2 === 0) {
-                operatorAsEqual(e.key)
+                operatorToCalc(e.key)
             }
         } else if (e.key === "=" || e.key === "Enter") {
-            equalPreProcess("=");
-            calcWithTempNum("=");
+            equalHandler("=") // 按下等于号或enter键
         } else if (e.key === "c") {
-            // 按下物理键盘上的c按键时
-            init()
+            init() // 按下物理键盘上的c按键
         }
     })
-
-    // 函数
 
     // 初始化函数
     function init() {
@@ -69,39 +57,29 @@ window.onload = function () {
         inputBar.innerText = result
         tempNum = ""
         tempOperator = ""
-        console.log("--> calculator init")
+        console.log("calculator init")
     }
 
-    // 基础加减乘除运算函数
-    function calc(operator, x, y) {
-        console.log(operator, x, y)
-        if (operator === "+") {
-            return x + y // 加法
-        } else if (operator === "−" || operator === "-") {
-            return x - y // 减法
-        } else if (operator === "×" || operator === "*") {
-            return x * y // 乘法
-        } else if (operator === "÷" || operator === "/") {
-            return x / y // 除法
-        }
-    }
-
-    // 处理输入的函数
-    function input(input) {
+    // 处理数字输入的函数
+    function inputHandler(input) {
         if (operators.at(-1) === "=") {
-            init()
+            init() // 当通过=号计算出结果后，输入数字立即重新启动
         }
         if (currentInput === "0" && input === "0") {
-            return
+            return // 阻止连续输入两个00做为数字的开头
         }
         if (currentInput.includes(".") && input === ".") {
-            return
+            return // 阻止在数字中输入两个小数点
+        }
+        if (currentInput === "" && input === ".") {
+            currentInput += "0"
         }
         currentInput += input
         inputBar.innerText = currentInput
     }
 
-    function operatorProcess(operator) {
+    // 处理运算符输入的函数
+    function operatorHandler(operator) {
         if (currentInput === "") {
             if (operators.length === 0) {
                 return
@@ -115,44 +93,27 @@ window.onload = function () {
         currentInput = ""
     }
 
-    function operatorAsEqual(oper) {
-        if (oper === "×" || oper === "÷" || oper === "*" || oper === "/") {
+    // 通过运算符来获得计算结果的函数
+    function operatorToCalc(operator) {
+        if (operator === "×" || operator === "÷" || operator === "*" || operator === "/") {
             if (operators[0] === "+" || operators[0] === "−") {
-                tempNum = numbers[0];
-                tempOperator = operators[0];
-                numbers.shift();
-                operators.shift();
+                tempNum = numbers[0]
+                tempOperator = operators[0]
+                numbers.shift()
+                operators.shift()
             } else {
                 result = calc(operators.at(-2), numbers.at(-2), numbers.at(-1))
                 inputBar.innerText = result
                 numbers.push(result)
-                operators.push(oper)
+                operators.push(operator)
             }
-        } else if (oper === "+" || oper === "−" || oper === "-") {
-            calcWithTempNum(oper)
+        } else if (operator === "+" || operator === "−" || operator === "-") {
+            getResult(operator)
         }
     }
 
-    function calcWithTempNum(oper) {
-        if (tempNum !== "") {
-            console.log("The First Way")
-            result = calc(operators.at(-2), numbers.at(-2), numbers.at(-1))
-            result = calc(tempOperator, tempNum, result)
-            inputBar.innerText = result
-            numbers.push(result)
-            operators.push(oper)
-            tempNum = ""
-            tempOperator = ""
-        } else if (tempNum === "") {
-            console.log("The Second Way")
-            result = calc(operators.at(-2), numbers.at(-2), numbers.at(-1))
-            inputBar.innerText = result
-            numbers.push(result)
-            operators.push(oper)
-        }
-    }
-
-    function equalPreProcess(equalKey) {
+    // 处理等于号的函数
+    function equalHandler(equalKey) {
         if (operators[operators.length - 1] === "=" || operators.length === 0) {
             return
         }
@@ -162,39 +123,32 @@ window.onload = function () {
         numbers.push(+currentInput)
         operators.push(equalKey)
         currentInput = ""
+        getResult(equalKey)
+    }
+
+    // 处理tempNum的函数
+    function getResult(operator) {
+        result = calc(operators.at(-2), numbers.at(-2), numbers.at(-1))
+        if (tempNum) {
+            result = calc(tempOperator, tempNum, result)
+            tempNum = ""
+            tempOperator = ""
+        }
+        inputBar.innerText = result
+        numbers.push(result)
+        operators.push(operator)
+    }
+
+    // 基础加减乘除运算函数
+    function calc(operator, x, y) {
+        if (operator === "+") {
+            return x + y
+        } else if (operator === "−" || operator === "-") {
+            return x - y //
+        } else if (operator === "×" || operator === "*") {
+            return x * y
+        } else if (operator === "÷" || operator === "/") {
+            return x / y
+        }
     }
 }
-
-
-    /* for (let i = 0; i < keyNumbers.length; i++) {
-        keyNumbers[i].addEventListener("click", function (e) {
-            input(e.target.textContent)
-        })
-    } */
-
-    // 当按下运算符号
-    /* for (let i = 0; i < keyOperators.length; i++) {
-        keyOperators[i].addEventListener("click", function (e) {
-            operatorProcess(e.target.textContent)
-            if (operators.length >= 2 && operators.length % 2 === 0) {
-                operatorAsEqual(e.target.textContent)
-            }
-        })
-    }
- */
-    // 按下=按键时
-    /* keyEqual.addEventListener("click", (e) => {
-        if (operators[operators.length - 1] === "=" || operators.length === 0) {
-            return
-        }
-        if (currentInput === "") {
-            return
-        }
-        equalPreProcess(e.target.textContent)
-        calcWithTempNum(e.target.textContent)
-    }) */
-
-    // 按下c按键时
-    /* keyClear.addEventListener("click", () => {
-        init()
-    }) */
