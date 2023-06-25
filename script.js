@@ -33,7 +33,7 @@ window.onload = function () {
     })
 
     document.addEventListener("keypress", (e) => {
-        console.log(e.key)
+        // console.log(e.key)
         if (numbersArr.indexOf(e.key) !== -1) {
             inputHandler(e.key) // 按下数字键
         } else if (operatorsArr.indexOf(e.key) !== -1) {
@@ -42,7 +42,7 @@ window.onload = function () {
                 operatorToCalc(e.key)
             }
         } else if (e.key === "=" || e.key === "Enter") {
-            equalHandler("=") // 按下等于号或enter键
+            equalHandler(e.key) // 按下等于号或enter键
         } else if (e.key === "c") {
             init() // 按下物理键盘上的c按键
         }
@@ -62,7 +62,7 @@ window.onload = function () {
 
     // 处理数字输入的函数
     function inputHandler(input) {
-        if (operators.at(-1) === "=") {
+        if (operators.at(-1) === "=" || operators.at(-1) === "Enter") {
             init() // 当通过=号计算出结果后，输入数字立即重新启动
         }
         if (currentInput === "0" && input === "0") {
@@ -114,7 +114,7 @@ window.onload = function () {
 
     // 处理等于号的函数
     function equalHandler(equalKey) {
-        if (operators[operators.length - 1] === "=" || operators.length === 0) {
+        if (operators[operators.length - 1] === "=" || operators[operators.length - 1] === "Enter" || operators.length === 0) {
             return
         }
         if (currentInput === "") {
