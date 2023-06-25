@@ -1,48 +1,40 @@
 window.onload = function () {
     const inputBar = document.getElementById("input");
-    const keyNumbers = document.querySelectorAll(".number")
-    const keyOperators = document.querySelectorAll(".operator")
+    const keyNumbers = [...document.getElementsByClassName("number")];
+    const keyOperators = [...document.getElementsByClassName("operator")];
     const keyClear = document.querySelector(".clear");
     const keyEqual = document.querySelector(".equal");
 
-    let currentInput
-    let numbers
-    let operators
-    let result
-    let tempNum
-    let tempOperator
+    let currentInput;
+    let numbers;
+    let operators;
+    let result;
+    let tempNum;
+    let tempOperator;
 
     init()
 
     let numbersArr = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."]
     let operatorsArr = ["+", "-", "*", "/"]
     
-    // 当数字键按下
-    for (let i = 0; i < keyNumbers.length; i++) {
-        keyNumbers[i].addEventListener("click", function (e) {
-            input(e.target.textContent)
-        })
-    }
-
-    // 当按下运算符号
-    for (let i = 0; i < keyOperators.length; i++) {
-        keyOperators[i].addEventListener("click", function (e) {
+    document.addEventListener("click", (e) => {
+        if (keyNumbers.indexOf(e.target) !== -1) {
+            // 当数字键按下
+            input(e.target.innerText)
+        } else if (keyOperators.indexOf(e.target) !== -1) {
+            // 点击运算符
             operatorProcess(e.target.textContent)
             if (operators.length >= 2 && operators.length % 2 === 0) {
                 operatorAsEqual(e.target.textContent)
             }
-        })
-    }
-
-    // 按下=按键时
-    keyEqual.addEventListener("click", (e) => {
-        equalPreProcess(e.target.textContent)
-        calcWithTempNum(e.target.textContent)
-    })
-
-    // 按下c按键时
-    keyClear.addEventListener("click", () => {
-        init()
+        } else if (e.target === keyEqual) {
+            // 点击等于号
+            equalPreProcess(e.target.textContent)
+            calcWithTempNum(e.target.textContent)
+        } else if (e.target === keyClear) {
+            // 点击清空按钮
+            init()
+        }
     })
 
     // 物理键盘事件监听
@@ -130,13 +122,11 @@ window.onload = function () {
                 tempOperator = operators[0];
                 numbers.shift();
                 operators.shift();
-                return;
             } else {
                 result = calc(operators.at(-2), numbers.at(-2), numbers.at(-1))
                 inputBar.innerText = result
                 numbers.push(result)
                 operators.push(oper)
-                return
             }
         } else if (oper === "+" || oper === "−" || oper === "-") {
             calcWithTempNum(oper)
@@ -153,14 +143,12 @@ window.onload = function () {
             operators.push(oper)
             tempNum = ""
             tempOperator = ""
-            return
         } else if (tempNum === "") {
             console.log("The Second Way")
             result = calc(operators.at(-2), numbers.at(-2), numbers.at(-1))
             inputBar.innerText = result
             numbers.push(result)
             operators.push(oper)
-            return
         }
     }
 
@@ -176,3 +164,37 @@ window.onload = function () {
         currentInput = ""
     }
 }
+
+
+    /* for (let i = 0; i < keyNumbers.length; i++) {
+        keyNumbers[i].addEventListener("click", function (e) {
+            input(e.target.textContent)
+        })
+    } */
+
+    // 当按下运算符号
+    /* for (let i = 0; i < keyOperators.length; i++) {
+        keyOperators[i].addEventListener("click", function (e) {
+            operatorProcess(e.target.textContent)
+            if (operators.length >= 2 && operators.length % 2 === 0) {
+                operatorAsEqual(e.target.textContent)
+            }
+        })
+    }
+ */
+    // 按下=按键时
+    /* keyEqual.addEventListener("click", (e) => {
+        if (operators[operators.length - 1] === "=" || operators.length === 0) {
+            return
+        }
+        if (currentInput === "") {
+            return
+        }
+        equalPreProcess(e.target.textContent)
+        calcWithTempNum(e.target.textContent)
+    }) */
+
+    // 按下c按键时
+    /* keyClear.addEventListener("click", () => {
+        init()
+    }) */
