@@ -7,10 +7,63 @@
 }
 
 body {
-    background-color: #f5f5f9;
+    background-color: #f2f2f7;
+    color: #000000;
+    transition: all .3s ease-in-out;
+}
+
+body.dark {
+    background-color: #101010;
+    color: #ffffff;
+}
+
+.theme {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#toggle {
+    width: 48px;
+    height: 24px;
+    border: 1px solid #cccccc;
+    background-color: #e5e5e5;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+body.dark #toggle {
+    background-color: #000000;
+    border: 1px solid #222222;
+}
+
+#box {
+    width: 22px;
+    height: 22px;
+    background-color: #fff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all .3s ease;
+}
+
+#box svg {
+    width: 14px;
+    height: 14px;
+}
+
+body.dark #box {
+    transform: translateX(24px);
+    background-color: #333;
+    color: white;
+}
+
+body.dark #box svg {
+    transform: rotateZ(12deg);
 }
 
 .title {
+    color: inherit;
     text-align: center;
     margin-top: 100px;
     font-size: 24px;
@@ -43,7 +96,12 @@ body {
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(6, 1fr);
     gap: 1rem;
-    transition: all .3s;
+    transition: all .3s ease-in-out;
+}
+
+body.dark .calculator {
+    background-color: #000000;
+    border: 1px solid #222222;
 }
 
 .input {
@@ -61,6 +119,11 @@ body {
     transition: all .3s;
 }
 
+body.dark .input {
+    background-color: #000000;
+    border: 1px solid #222222;
+}
+
 .btn {
     font-size: 1.5rem;
     flex-grow: 1;
@@ -71,12 +134,22 @@ body {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transition: all .3s;
+    transition: all .3s ease-in-out;
+}
+
+body.dark .btn {
+    background-color: #333333;
+    border: 1px solid #444444;
 }
 
 .operator {
     background-color: #e2e2e7;
     border: 1px solid #bbb;
+}
+
+body.dark .operator {
+    background-color: #555555;
+    border: 1px solid #666666;
 }
 
 .equal {
@@ -87,7 +160,17 @@ body {
     color: white;
 }
 
+body.dark .equal {
+    background-color: rgb(248, 162, 57);
+    border: 1px solid rgb(255, 183, 98);
+}
+
 .btn:hover {
     box-shadow: 0 6px 8px rgba(0,0,0,.08);
+    font-weight: 360;
+}
+
+body.dark .btn:hover {
+    box-shadow: 0 6px 8px rgba(255,255,255,.08);
     font-weight: 360;
 }
